@@ -1,7 +1,7 @@
 // Statistiques derivees de l'analyse, pretes pour les graphiques.
 
 import type { Analysis } from './analyze';
-import { NATURE_CONTRAT, SEXE, STATUT_CATEGORIEL_RC, STATUT_SALARIE } from './labels';
+import { RUB, getNomenclature } from './labels';
 
 export interface Slice {
   label: string;
@@ -33,17 +33,20 @@ function toSlices(
 }
 
 export function contratsParNature(a: Analysis): Slice[] {
-  return toSlices(tally(a.contrats.map((c) => c.nature)), NATURE_CONTRAT);
+  return toSlices(tally(a.contrats.map((c) => c.nature)), getNomenclature(RUB.NATURE_CONTRAT));
 }
 
 /** Repartition par categorie socio-professionnelle (S21.G00.40.002). */
 export function contratsParStatutSalarie(a: Analysis): Slice[] {
-  return toSlices(tally(a.contrats.map((c) => c.statut)), STATUT_SALARIE);
+  return toSlices(tally(a.contrats.map((c) => c.statut)), getNomenclature(RUB.STATUT_SALARIE));
 }
 
 /** Repartition cadre / non cadre (S21.G00.40.003, AGIRC-ARRCO). */
 export function contratsParCategorieCadre(a: Analysis): Slice[] {
-  return toSlices(tally(a.contrats.map((c) => c.statutCategoriel)), STATUT_CATEGORIEL_RC);
+  return toSlices(
+    tally(a.contrats.map((c) => c.statutCategoriel)),
+    getNomenclature(RUB.STATUT_CATEGORIEL_RC),
+  );
 }
 
 const toNum = (s?: string) => parseFloat((s ?? '').replace(',', '.'));
@@ -76,7 +79,7 @@ export function repartitionTempsTravail(a: Analysis): Slice[] {
 }
 
 export function individusParSexe(a: Analysis): Slice[] {
-  return toSlices(tally(a.individus.map((i) => i.sexe)), SEXE);
+  return toSlices(tally(a.individus.map((i) => i.sexe)), getNomenclature(RUB.SEXE));
 }
 
 const TRANCHES: { label: string; min: number; max: number }[] = [

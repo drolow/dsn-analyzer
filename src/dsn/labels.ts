@@ -2,6 +2,11 @@
 //
 // Couvre les rubriques les plus utiles a la synthese. Pour toute rubrique non
 // listee, l'UI retombe sur le code brut : aucune information n'est perdue.
+//
+// Les valeurs de norme.json (cahier technique officiel) sont fusionnees
+// par-dessus ces defauts au chargement du module.
+
+import { NORME } from './norme';
 
 /** code rubrique complet (ex "S21.G00.30.005") -> libelle. */
 export const FIELD_LABEL: Record<string, string> = {
@@ -84,6 +89,9 @@ export const FIELD_LABEL: Record<string, string> = {
   'S21.G00.62.001': 'Date de fin du contrat',
   'S21.G00.62.002': 'Motif de rupture',
 };
+
+// Surcharge des libelles de rubriques depuis la norme officielle.
+Object.assign(FIELD_LABEL, NORME.fields ?? {});
 
 export function fieldLabel(fullCode: string): string {
   return FIELD_LABEL[fullCode] ?? fullCode;
@@ -172,4 +180,41 @@ export function decode(map: Record<string, string>, value?: string): string {
   if (!value) return '—';
   const label = map[value];
   return label ? `${label} (${value})` : value;
+}
+
+/** Codes de rubriques portant une nomenclature (lisibilite des appels). */
+export const RUB = {
+  NATURE_DECLARATION: 'S20.G00.05.001',
+  TYPE_DECLARATION: 'S20.G00.05.002',
+  SEXE: 'S21.G00.30.005',
+  STATUT_SALARIE: 'S21.G00.40.002',
+  STATUT_CATEGORIEL_RC: 'S21.G00.40.003',
+  NATURE_CONTRAT: 'S21.G00.40.007',
+  MOTIF_RUPTURE: 'S21.G00.62.002',
+  TYPE_REMUNERATION: 'S21.G00.51.011',
+} as const;
+
+/** Nomenclatures integrees, indexees par code de rubrique. */
+const BUILTIN_NOMENCLATURES: Record<string, Record<string, string>> = {
+  [RUB.NATURE_DECLARATION]: NATURE_DECLARATION,
+  [RUB.TYPE_DECLARATION]: TYPE_DECLARATION,
+  [RUB.SEXE]: SEXE,
+  [RUB.STATUT_SALARIE]: STATUT_SALARIE,
+  [RUB.STATUT_CATEGORIEL_RC]: STATUT_CATEGORIEL_RC,
+  [RUB.NATURE_CONTRAT]: NATURE_CONTRAT,
+};
+
+/**
+ * Nomenclature effective pour une rubrique = valeurs integrees fusionnees avec
+ * celles de norme.json (la norme officielle gagne en cas de conflit).
+ */
+export function getNomenclature(rubrique: string): Record<string, string> {
+  const builtin = BUILTIN_NOMENCLATURES[rubrique] ?? {};
+  const override = (NORME.nomenclatures ?? {})[rubrique];
+  return override ? { ...builtin, ...override } : builtin;
+}
+
+/** Decode une valeur via la nomenclature (integree + norme) d'une rubrique. */
+export function decodeCode(rubrique: string, value?: string): string {
+  return decode(getNomenclature(rubrique), value);
 }

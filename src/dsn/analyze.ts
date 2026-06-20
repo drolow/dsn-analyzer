@@ -3,6 +3,11 @@
 import { BLOCK } from './hierarchy';
 import type { DsnNode, ParsedFile } from './model';
 import { field } from './model';
+import { NORME } from './norme';
+
+// Parametres pilotables par la norme officielle (norme.json), avec defauts.
+const BRUT_TYPES = new Set(NORME.meta?.remunerationBruteTypes ?? ['001']);
+const EFFECTIF_RUBRIQUE = NORME.meta?.effectifEtablissementRubrique ?? '015';
 
 export interface EntrepriseRec {
   key: string; // SIREN
@@ -211,7 +216,7 @@ export function analyze(parsed: ParsedFile[]): Analysis {
             ape: field(node, '002'),
             codePostal: field(node, '004'),
             commune: field(node, '005'),
-            effectif: field(node, '015'),
+            effectif: field(node, EFFECTIF_RUBRIQUE) ?? field(node, '022'),
             individus: new Set(),
             nbContrats: 0,
           };
@@ -298,7 +303,7 @@ export function analyze(parsed: ParsedFile[]): Analysis {
       case BLOCK.REMUNERATION: {
         const type = field(node, '011');
         const montant = toAmount(field(node, '013'));
-        if (type === '001') remunerationBruteTotale += montant;
+        if (type && BRUT_TYPES.has(type)) remunerationBruteTotale += montant;
         break;
       }
       case BLOCK.VERSEMENT: {

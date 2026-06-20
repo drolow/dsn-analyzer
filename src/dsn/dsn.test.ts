@@ -3,6 +3,8 @@ import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { parseDsn } from './parser';
 import { analyze } from './analyze';
+import { RUB, getNomenclature } from './labels';
+import { mergeRecord, normeChargee } from './norme';
 import {
   contratsParCategorieCadre,
   contratsParNature,
@@ -97,5 +99,23 @@ describe('analyze', () => {
   it('cumule la remuneration brute (type 001)', () => {
     // 4200 + 2450 + 1750 + 6800 + 2050
     expect(a.remunerationBruteTotale).toBeCloseTo(17250, 2);
+  });
+});
+
+describe('couche de surcharge norme', () => {
+  it('utilise les nomenclatures integrees par defaut', () => {
+    expect(getNomenclature(RUB.NATURE_CONTRAT)['01']).toBe('CDI');
+    expect(getNomenclature(RUB.STATUT_CATEGORIEL_RC)['04']).toBe('Non cadre');
+  });
+
+  it('norme.json vide => non chargee', () => {
+    expect(normeChargee()).toBe(false);
+  });
+
+  it('mergeRecord : la surcharge gagne, sinon defaut conserve', () => {
+    const merged = mergeRecord({ '01': 'CDI', '02': 'CDD' }, { '02': 'CDD modifie', '03': 'Interim' });
+    expect(merged['01']).toBe('CDI');
+    expect(merged['02']).toBe('CDD modifie');
+    expect(merged['03']).toBe('Interim');
   });
 });

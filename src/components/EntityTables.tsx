@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import type { Analysis } from '../dsn/analyze';
-import { NATURE_CONTRAT, SEXE, STATUT_CATEGORIEL_RC, STATUT_SALARIE, decode } from '../dsn/labels';
+import { RUB, decodeCode } from '../dsn/labels';
 import { dash, frDate, siren as fmtSiren } from '../format';
 
 type Tab = 'entreprises' | 'etablissements' | 'individus' | 'contrats';
@@ -148,7 +148,7 @@ export default function EntityTables({ analysis }: { analysis: Analysis }) {
                     <tr key={i.key} className="hover:bg-slate-50">
                       <Td>{dash(i.nom)}</Td>
                       <Td>{dash(i.prenoms)}</Td>
-                      <Td>{decode(SEXE, i.sexe)}</Td>
+                      <Td>{decodeCode(RUB.SEXE, i.sexe)}</Td>
                       <Td>{frDate(i.dateNaissance)}</Td>
                       <Td>{i.age ?? '—'}</Td>
                       <Td>{dash(i.nir ?? i.ntt)}</Td>
@@ -182,9 +182,9 @@ export default function EntityTables({ analysis }: { analysis: Analysis }) {
                   .map((c) => (
                     <tr key={c.key} className="hover:bg-slate-50">
                       <Td>{individuLabel.get(c.individuKey) ?? '—'}</Td>
-                      <Td>{decode(NATURE_CONTRAT, c.nature)}</Td>
-                      <Td>{decode(STATUT_SALARIE, c.statut)}</Td>
-                      <Td>{decode(STATUT_CATEGORIEL_RC, c.statutCategoriel)}</Td>
+                      <Td>{decodeCode(RUB.NATURE_CONTRAT, c.nature)}</Td>
+                      <Td>{decodeCode(RUB.STATUT_SALARIE, c.statut)}</Td>
+                      <Td>{decodeCode(RUB.STATUT_CATEGORIEL_RC, c.statutCategoriel)}</Td>
                       <Td>{dash(c.libelleEmploi)}</Td>
                       <Td>{frDate(c.dateDebut)}</Td>
                       <Td>{frDate(c.dateFin)}</Td>

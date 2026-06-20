@@ -4,6 +4,7 @@ import FileDropzone, { type LoadedFile } from './components/FileDropzone';
 import Dashboard from './components/Dashboard';
 import { parseFiles } from './dsn/parser';
 import { analyze } from './dsn/analyze';
+import { NORME, normeChargee } from './dsn/norme';
 
 export default function App() {
   const [files, setFiles] = useState<LoadedFile[]>([]);
@@ -82,6 +83,14 @@ export default function App() {
 
       <footer className="mx-auto max-w-6xl px-4 py-8 text-center text-xs text-slate-400">
         Analyseur DSN — traitement local dans le navigateur. Norme DSN phase 3.
+        {' · '}
+        {normeChargee() ? (
+          <span className="text-emerald-600">
+            Nomenclatures officielles chargees{NORME.version ? ` (${NORME.version})` : ''}
+          </span>
+        ) : (
+          <span>Nomenclatures integrees par defaut</span>
+        )}
       </footer>
     </div>
   );

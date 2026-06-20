@@ -107,5 +107,37 @@ Les nomenclatures clés ont été alignées sur le cahier technique NEODeS
 
 Pour tout code hors nomenclature, l'UI affiche le code brut (aucune perte).
 
+### Surcharger avec le cahier technique officiel (`norme.json`)
+
+L'application embarque des valeurs par défaut, mais peut être **alimentée par le
+cahier technique officiel** via le fichier `src/dsn/norme.json`. Ce fichier est
+fusionné par-dessus les défauts au chargement : ce qu'il renseigne fait foi, le
+reste retombe sur les valeurs intégrées. Il peut donc être partiel ou vide.
+
+Schéma :
+
+```json
+{
+  "version": "CT2026.1.x",
+  "meta": {
+    "remunerationBruteTypes": ["001"],
+    "effectifEtablissementRubrique": "015"
+  },
+  "blocks":        { "S21.G00.40": { "label": "Contrat", "parent": "S21.G00.30" } },
+  "fields":        { "S21.G00.40.007": "Nature du contrat" },
+  "nomenclatures": { "S21.G00.40.007": { "01": "CDI", "02": "CDD" } },
+  "_warnings": []
+}
+```
+
+- `blocks` → hiérarchie (`parent`) et libellés des blocs ;
+- `fields` → libellés des rubriques ;
+- `nomenclatures` → décodage des valeurs (code → libellé) ;
+- `meta` → paramètres d'analyse (type(s) de rémunération brute, rubrique d'effectif).
+
+Le pied de page indique si une norme officielle est chargée. Ce `norme.json`
+peut être généré depuis le cahier technique (par ex. via un MCP `dsn-cahier-technique`)
+puis déposé tel quel — aucune modification de code n'est nécessaire.
+
 ⚠️ Ne committez jamais de vrais fichiers DSN : `.gitignore` exclut déjà
 `*.dsn` (sauf les exemples fictifs de `src/sample/`).

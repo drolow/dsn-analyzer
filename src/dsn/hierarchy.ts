@@ -16,6 +16,8 @@
 // d'une parente exacte ; ils sont ici verifies. Les autres facilitent
 // l'affichage de l'arbre.
 
+import { NORME } from './norme';
+
 /** block -> parent block (null = racine). */
 export const BLOCK_PARENT: Record<string, string | null> = {
   // --- Envoi ---
@@ -116,6 +118,12 @@ export const BLOCK_LABEL: Record<string, string> = {
   'S21.G00.86': 'Ancienne situation',
   'S90.G00.90': 'Total',
 };
+
+// Applique la surcharge issue de norme.json (parents + libelles de blocs).
+for (const [code, def] of Object.entries(NORME.blocks ?? {})) {
+  if (def && 'parent' in def) BLOCK_PARENT[code] = def.parent ?? null;
+  if (def && def.label) BLOCK_LABEL[code] = def.label;
+}
 
 export function blockLabel(block: string): string {
   return BLOCK_LABEL[block] ?? block;
