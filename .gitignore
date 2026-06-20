@@ -1,0 +1,13 @@
+node_modules
+dist
+dist-ssr
+*.local
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
+
+# Donnees sensibles : ne jamais committer de vrais fichiers DSN.
+# Les exemples de developpement sont dans src/sample/ (donnees fictives).
+*.dsn
+*.txt.dsn
+!src/sample/*.dsn
