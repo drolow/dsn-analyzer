@@ -5,9 +5,8 @@ import type { DsnNode, ParsedFile } from './model';
 import { field } from './model';
 import { NORME } from './norme';
 
-// Parametres pilotables par la norme officielle (norme.json), avec defauts.
+// Parametres pilotables par la norme officielle (norme.json), avec defaut.
 const BRUT_TYPES = new Set(NORME.meta?.remunerationBruteTypes ?? ['001']);
-const EFFECTIF_RUBRIQUE = NORME.meta?.effectifEtablissementRubrique ?? '015';
 
 export interface EntrepriseRec {
   key: string; // SIREN
@@ -30,7 +29,6 @@ export interface EtablissementRec {
   ape?: string;
   codePostal?: string;
   commune?: string;
-  effectif?: string;
   individus: Set<string>;
   nbContrats: number;
 }
@@ -176,7 +174,7 @@ export function analyze(parsed: ParsedFile[]): Analysis {
           // .001 = nature (DSN mensuelle / signalement), .002 = type.
           type: field(node, '001'),
           moisPrincipal: field(node, '005'),
-          numeroOrdre: field(node, '003'),
+          numeroOrdre: field(node, '004'),
         });
         break;
       }
@@ -190,7 +188,7 @@ export function analyze(parsed: ParsedFile[]): Analysis {
             siren,
             nicSiege: field(node, '002'),
             ape: field(node, '003'),
-            idcc: undefined, // renseigne depuis le contrat (.017)
+            idcc: field(node, '015'), // convention collective ; repli sur le contrat (.017)
             codePostal: field(node, '005'),
             commune: field(node, '006'),
             etablissements: new Set(),
@@ -216,7 +214,6 @@ export function analyze(parsed: ParsedFile[]): Analysis {
             ape: field(node, '002'),
             codePostal: field(node, '004'),
             commune: field(node, '005'),
-            effectif: field(node, EFFECTIF_RUBRIQUE) ?? field(node, '022'),
             individus: new Set(),
             nbContrats: 0,
           };

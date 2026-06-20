@@ -2,9 +2,10 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { parseDsn } from './parser';
+import type { DsnNode } from './model';
 import { analyze } from './analyze';
 import { RUB, getNomenclature } from './labels';
-import { mergeRecord, normeChargee } from './norme';
+import { NORME, mergeRecord, normeChargee } from './norme';
 import {
   contratsParCategorieCadre,
   contratsParNature,
@@ -29,15 +30,16 @@ describe('parseDsn', () => {
 
   it('reconstruit la hierarchie entreprise > etablissement > individu > contrat', () => {
     const { roots } = parseDsn(sample, 'exemple.dsn');
-    // Racines : Envoi (S10.G00.00) + Declaration (S20.G00.05).
-    const decl = roots.find((r) => r.block === 'S20.G00.05');
-    expect(decl).toBeDefined();
-    const ent = decl!.children.find((c) => c.block === 'S21.G00.06');
-    expect(ent).toBeDefined();
-    const etabs = ent!.children.filter((c) => c.block === 'S21.G00.11');
+    const find = (block: string, nodes = roots): DsnNode[] =>
+      nodes.flatMap((n) => (n.block === block ? [n] : find(block, n.children)));
+
+    const ent = find('S21.G00.06');
+    expect(ent).toHaveLength(1);
+    const etabs = ent[0].children.filter((c) => c.block === 'S21.G00.11');
     expect(etabs).toHaveLength(2);
     const individusEtab1 = etabs[0].children.filter((c) => c.block === 'S21.G00.30');
     expect(individusEtab1).toHaveLength(3);
+    expect(individusEtab1[0].children.some((c) => c.block === 'S21.G00.40')).toBe(true);
   });
 });
 
@@ -103,13 +105,15 @@ describe('analyze', () => {
 });
 
 describe('couche de surcharge norme', () => {
-  it('utilise les nomenclatures integrees par defaut', () => {
-    expect(getNomenclature(RUB.NATURE_CONTRAT)['01']).toBe('CDI');
-    expect(getNomenclature(RUB.STATUT_CATEGORIEL_RC)['04']).toBe('Non cadre');
+  it('charge la norme officielle (norme.json) et expose sa version', () => {
+    expect(normeChargee()).toBe(true);
+    expect(NORME.version).toBe('CT2026.1.1');
   });
 
-  it('norme.json vide => non chargee', () => {
-    expect(normeChargee()).toBe(false);
+  it('les nomenclatures officielles ont priorite sur les defauts', () => {
+    // Le cahier technique remplace le libelle court "CDI" par le libelle complet.
+    expect(getNomenclature(RUB.NATURE_CONTRAT)['01']).toMatch(/duree indeterminee|durée indéterminée/i);
+    expect(getNomenclature(RUB.STATUT_CATEGORIEL_RC)['04']).toMatch(/non cadre/i);
   });
 
   it('mergeRecord : la surcharge gagne, sinon defaut conserve', () => {

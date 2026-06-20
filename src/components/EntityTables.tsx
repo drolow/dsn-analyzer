@@ -104,7 +104,6 @@ export default function EntityTables({ analysis }: { analysis: Analysis }) {
                   <Th>APET</Th>
                   <Th>CP</Th>
                   <Th>Commune</Th>
-                  <Th>Effectif decl.</Th>
                   <Th>Individus</Th>
                   <Th>Contrats</Th>
                 </tr>
@@ -119,7 +118,6 @@ export default function EntityTables({ analysis }: { analysis: Analysis }) {
                       <Td>{dash(e.ape)}</Td>
                       <Td>{dash(e.codePostal)}</Td>
                       <Td>{dash(e.commune)}</Td>
-                      <Td>{dash(e.effectif)}</Td>
                       <Td>{e.individus.size}</Td>
                       <Td>{e.nbContrats}</Td>
                     </tr>

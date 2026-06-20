@@ -13,8 +13,6 @@ import rawNorme from './norme.json';
 export interface NormeMeta {
   /** Code(s) de S21.G00.51.011 comptant comme remuneration brute (anti double-compte). */
   remunerationBruteTypes?: string[];
-  /** Rubrique de S21.G00.11 portant l'effectif de l'etablissement. */
-  effectifEtablissementRubrique?: string;
 }
 
 export interface NormeBlock {

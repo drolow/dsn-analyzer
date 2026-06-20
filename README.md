@@ -87,25 +87,33 @@ compteurs et les tables. Deux points d'amélioration faciles si besoin :
   fiscal additionne `S21.G00.50.002`. Ces montants sont **indicatifs** et
   dépendent des conventions de paie ; à valider sur vos données.
 
-### Validé sur un fichier réel
+### Source officielle : cahier technique NEODeS
 
-Le parser et les libellés ont été calés sur un vrai fichier DSN mensuel
-(éditeur Silae, norme P23V01) en plus de l'exemple synthétique. Les rubriques
-clés sont confirmées : SIREN/NIC, APE, adresses, NIR, nom/prénoms, date de
-naissance, matricule, nature du contrat (CDI/CDD…), libellé d'emploi, quotités,
-convention collective (IDCC, `S21.G00.40.017`), bases et cotisations.
+Les blocs, libellés de rubriques et nomenclatures proviennent du **cahier
+technique officiel `CT2026.1.1`**, embarqué dans `src/dsn/norme.json` (voir
+ci-dessous le mécanisme de surcharge). Cela couvre notamment :
 
-Les nomenclatures clés ont été alignées sur le cahier technique NEODeS
-(norme DSN 2026, CT2026.1) :
+- hiérarchie et libellés des 30 blocs principaux ;
+- 204 libellés de rubriques ;
+- nomenclatures : nature du contrat `S21.G00.40.007`, statut du salarié
+  conventionnel `S21.G00.40.002`, statut catégoriel Retraite Complémentaire
+  `S21.G00.40.003` (cadre/non cadre), nature/type de déclaration, sexe, motif de
+  rupture `S21.G00.62.002`, type de rémunération `S21.G00.51.011`.
 
-- nature du contrat `S21.G00.40.007` (CDI/CDD/apprentissage…) ;
-- statut du salarié conventionnel `S21.G00.40.002` (cadre dirigeant, autre cadre,
-  profession intermédiaire, employé, ouvrier, agents de la fonction publique) ;
-- statut catégoriel Retraite Complémentaire `S21.G00.40.003` (cadre / assimilé
-  cadre / non cadre — c'est ce code qui pilote la répartition cadre/non-cadre) ;
-- nature/type de la déclaration `S20.G00.05.001/.002`, sexe `S21.G00.30.005`.
+Points confirmés par la norme :
 
-Pour tout code hors nomenclature, l'UI affiche le code brut (aucune perte).
+- **convention collective (IDCC)** : portée par `S21.G00.06.015` (entreprise),
+  avec repli sur `S21.G00.40.017` (contrat) ;
+- **masse salariale brute** : somme du type `001` (« Rémunération brute non
+  plafonnée ») du bloc `S21.G00.51`, sans le type `002` (assiette chômage) pour
+  éviter le double comptage ;
+- **effectif établissement** : le bloc `S21.G00.11` ne comporte aucune rubrique
+  d'effectif ; l'effectif par établissement affiché est donc **calculé** (nombre
+  d'individus distincts rattachés), pas lu dans le fichier.
+
+Le parser a par ailleurs été validé sur un vrai fichier DSN mensuel (éditeur
+Silae). Pour tout code hors nomenclature, l'UI affiche le code brut (aucune
+perte).
 
 ### Surcharger avec le cahier technique officiel (`norme.json`)
 
@@ -118,11 +126,8 @@ Schéma :
 
 ```json
 {
-  "version": "CT2026.1.x",
-  "meta": {
-    "remunerationBruteTypes": ["001"],
-    "effectifEtablissementRubrique": "015"
-  },
+  "version": "CT2026.1.1",
+  "meta": { "remunerationBruteTypes": ["001"] },
   "blocks":        { "S21.G00.40": { "label": "Contrat", "parent": "S21.G00.30" } },
   "fields":        { "S21.G00.40.007": "Nature du contrat" },
   "nomenclatures": { "S21.G00.40.007": { "01": "CDI", "02": "CDD" } },
@@ -133,7 +138,8 @@ Schéma :
 - `blocks` → hiérarchie (`parent`) et libellés des blocs ;
 - `fields` → libellés des rubriques ;
 - `nomenclatures` → décodage des valeurs (code → libellé) ;
-- `meta` → paramètres d'analyse (type(s) de rémunération brute, rubrique d'effectif).
+- `meta.remunerationBruteTypes` → code(s) de `S21.G00.51.011` comptant comme
+  rémunération brute (défaut `["001"]`).
 
 Le pied de page indique si une norme officielle est chargée. Ce `norme.json`
 peut être généré depuis le cahier technique (par ex. via un MCP `dsn-cahier-technique`)
