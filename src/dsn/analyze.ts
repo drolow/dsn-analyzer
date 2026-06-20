@@ -39,7 +39,9 @@ export interface ContratRec {
   statut?: string; // code
   pcs?: string;
   libelleEmploi?: string;
-  quotite?: string;
+  quotite?: string; // S21.G00.40.013
+  quotiteRef?: string; // S21.G00.40.012
+  idcc?: string; // S21.G00.40.017 (convention collective)
   siren?: string;
   nic?: string;
   individuKey: string;
@@ -165,7 +167,8 @@ export function analyze(parsed: ParsedFile[]): Analysis {
         }
         declarations.push({
           fichier: ctx.fileName,
-          type: field(node, '002'),
+          // .001 = nature (DSN mensuelle / signalement), .002 = type.
+          type: field(node, '001'),
           moisPrincipal: field(node, '005'),
           numeroOrdre: field(node, '003'),
         });
@@ -181,9 +184,9 @@ export function analyze(parsed: ParsedFile[]): Analysis {
             siren,
             nicSiege: field(node, '002'),
             ape: field(node, '003'),
-            idcc: field(node, '004'),
-            codePostal: field(node, '006'),
-            commune: field(node, '007'),
+            idcc: undefined, // renseigne depuis le contrat (.017)
+            codePostal: field(node, '005'),
+            commune: field(node, '006'),
             etablissements: new Set(),
             individus: new Set(),
             nbContrats: 0,
@@ -213,6 +216,7 @@ export function analyze(parsed: ParsedFile[]): Analysis {
           };
           etablissements.set(key, rec);
         }
+        if (ctx.siren && nic) entreprises.get(ctx.siren)?.etablissements.add(nic);
         next = { ...ctx, nic };
         break;
       }
@@ -230,8 +234,8 @@ export function analyze(parsed: ParsedFile[]): Analysis {
             sexe: field(node, '005'),
             dateNaissance: field(node, '006'),
             age: birth ? ageFrom(birth, ageRef) : undefined,
-            codePostal: field(node, '010'),
-            commune: field(node, '011'),
+            codePostal: field(node, '009'),
+            commune: field(node, '010'),
             siren: ctx.siren,
             nic: ctx.nic,
             contrats: [],
@@ -259,6 +263,8 @@ export function analyze(parsed: ParsedFile[]): Analysis {
             pcs: field(node, '004'),
             libelleEmploi: field(node, '006'),
             quotite: field(node, '013'),
+            quotiteRef: field(node, '012'),
+            idcc: field(node, '017'),
             siren: ctx.siren,
             nic: ctx.nic,
             individuKey: ctx.individuKey ?? '?',
@@ -267,7 +273,10 @@ export function analyze(parsed: ParsedFile[]): Analysis {
           ctx.individuRec?.contrats.push(rec);
           if (ctx.siren) {
             const e = entreprises.get(ctx.siren);
-            if (e) e.nbContrats++;
+            if (e) {
+              e.nbContrats++;
+              if (!e.idcc && rec.idcc) e.idcc = rec.idcc;
+            }
           }
           const etabKey = `${ctx.siren ?? '?'}-${ctx.nic ?? '?'}`;
           const etab = etablissements.get(etabKey);

@@ -1,10 +1,10 @@
 import type { Analysis } from '../dsn/analyze';
 import {
   contratsParNature,
-  contratsParStatut,
   effectifParEtablissement,
   individusParSexe,
   individusParTrancheAge,
+  repartitionTempsTravail,
 } from '../dsn/stats';
 import { BarCard, PieCard } from './Charts';
 import EntityTables from './EntityTables';
@@ -31,9 +31,9 @@ export default function Dashboard({ analysis }: { analysis: Analysis }) {
           data={individusParTrancheAge(analysis)}
         />
         <PieCard
-          title="Repartition cadre / non cadre"
-          subtitle="Statut conventionnel des contrats"
-          data={contratsParStatut(analysis)}
+          title="Temps plein / temps partiel"
+          subtitle="Quotite du contrat vs quotite de reference"
+          data={repartitionTempsTravail(analysis)}
         />
       </div>
 

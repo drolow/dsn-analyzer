@@ -40,6 +40,35 @@ export function contratsParStatut(a: Analysis): Slice[] {
   return toSlices(tally(a.contrats.map((c) => c.statut)), STATUT_CONVENTIONNEL);
 }
 
+const toNum = (s?: string) => parseFloat((s ?? '').replace(',', '.'));
+
+/**
+ * Repartition temps plein / temps partiel : quotite du contrat (.013) comparee
+ * a la quotite de reference de l'entreprise (.012).
+ */
+export function repartitionTempsTravail(a: Analysis): Slice[] {
+  let plein = 0;
+  let partiel = 0;
+  let inconnu = 0;
+  for (const c of a.contrats) {
+    const q = toNum(c.quotite);
+    const ref = toNum(c.quotiteRef);
+    if (!Number.isFinite(q) || !Number.isFinite(ref) || ref <= 0) {
+      inconnu++;
+    } else if (q + 0.01 < ref) {
+      partiel++;
+    } else {
+      plein++;
+    }
+  }
+  const slices: Slice[] = [
+    { label: 'Temps plein', value: plein },
+    { label: 'Temps partiel', value: partiel },
+  ];
+  if (inconnu > 0) slices.push({ label: 'Indetermine', value: inconnu });
+  return slices.filter((s) => s.value > 0);
+}
+
 export function individusParSexe(a: Analysis): Slice[] {
   return toSlices(tally(a.individus.map((i) => i.sexe)), SEXE);
 }

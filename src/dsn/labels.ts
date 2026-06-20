@@ -9,25 +9,30 @@ export const FIELD_LABEL: Record<string, string> = {
   'S10.G00.00.001': 'Nom du logiciel',
   'S10.G00.00.002': 'Editeur',
   'S10.G00.00.003': 'Version du logiciel',
-  'S10.G00.00.006': "Type d'envoi",
+  'S10.G00.00.006': 'Version de la norme (NEODeS)',
   'S10.G00.00.008': 'Devise',
   // Emetteur
-  'S10.G00.01.001': 'SIRET emetteur',
-  'S10.G00.01.002': 'Raison sociale emetteur',
+  'S10.G00.01.001': 'SIREN emetteur',
+  'S10.G00.01.002': 'NIC emetteur',
+  'S10.G00.01.003': 'Raison sociale emetteur',
+  'S10.G00.01.004': 'Adresse emetteur',
+  'S10.G00.01.005': 'Code postal emetteur',
+  'S10.G00.01.006': 'Commune emetteur',
   // Declaration
-  'S20.G00.05.002': 'Type de declaration',
+  'S20.G00.05.001': 'Nature de la declaration',
+  'S20.G00.05.002': 'Type de la declaration',
   'S20.G00.05.003': "Numero d'ordre",
+  'S20.G00.05.004': 'Identifiant metier',
   'S20.G00.05.005': 'Mois principal declare',
-  'S20.G00.05.007': 'Champ de la declaration',
+  'S20.G00.05.007': 'Date du fichier',
   'S20.G00.05.010': 'Numero de fraction',
   // Entreprise
   'S21.G00.06.001': 'SIREN',
   'S21.G00.06.002': 'NIC du siege',
   'S21.G00.06.003': 'Code APE',
-  'S21.G00.06.004': 'Convention collective (IDCC)',
-  'S21.G00.06.005': 'Adresse',
-  'S21.G00.06.006': 'Code postal',
-  'S21.G00.06.007': 'Commune',
+  'S21.G00.06.004': 'Adresse',
+  'S21.G00.06.005': 'Code postal',
+  'S21.G00.06.006': 'Commune',
   // Etablissement
   'S21.G00.11.001': 'NIC',
   'S21.G00.11.002': 'Code APET',
@@ -44,10 +49,9 @@ export const FIELD_LABEL: Record<string, string> = {
   'S21.G00.30.005': 'Sexe',
   'S21.G00.30.006': 'Date de naissance',
   'S21.G00.30.007': 'Lieu de naissance',
-  'S21.G00.30.008': 'Code departement de naissance',
-  'S21.G00.30.009': 'Code pays de naissance',
-  'S21.G00.30.010': 'Code postal',
-  'S21.G00.30.011': 'Commune',
+  'S21.G00.30.008': 'Adresse',
+  'S21.G00.30.009': 'Code postal',
+  'S21.G00.30.010': 'Commune',
   'S21.G00.30.019': 'Matricule',
   'S21.G00.30.020': 'Numero technique temporaire (NTT)',
   // Contrat
@@ -62,9 +66,10 @@ export const FIELD_LABEL: Record<string, string> = {
   'S21.G00.40.009': 'Numero du contrat',
   'S21.G00.40.010': 'Date de fin previsionnelle (CDD)',
   'S21.G00.40.011': 'Unite de mesure de la quotite',
-  'S21.G00.40.012': 'Quotite de travail de reference',
+  'S21.G00.40.012': "Quotite de travail de reference de l'entreprise",
   'S21.G00.40.013': 'Quotite de travail du contrat',
   'S21.G00.40.014': 'Modalite temps de travail',
+  'S21.G00.40.017': 'Convention collective (IDCC)',
   // Versement / remuneration
   'S21.G00.50.001': 'Date de versement',
   'S21.G00.50.002': 'Remuneration nette fiscale',
@@ -125,14 +130,23 @@ export const STATUT_CONVENTIONNEL: Record<string, string> = {
   '04': 'Autre',
 };
 
-/** Type de declaration (S20.G00.05.002). */
-export const TYPE_DECLARATION: Record<string, string> = {
+/** Nature de la declaration (S20.G00.05.001). */
+export const NATURE_DECLARATION: Record<string, string> = {
   '01': 'DSN mensuelle',
-  '02': 'DSN mensuelle neant',
-  '03': 'DSN signalement - arret de travail',
-  '04': 'DSN signalement - fin du contrat',
-  '05': 'DSN signalement - reprise',
-  '06': 'Annule et remplace',
+  '02': 'Signalement - arret de travail',
+  '03': 'Signalement - fin du contrat',
+  '04': 'Signalement - reprise',
+  '05': 'Signalement - amorcage des donnees',
+  '06': 'Signalement - fin du contrat unique',
+};
+
+/** Type de la declaration (S20.G00.05.002). */
+export const TYPE_DECLARATION: Record<string, string> = {
+  '01': 'Declaration normale',
+  '02': 'Declaration annule et remplace',
+  '03': 'Declaration annulee',
+  '04': 'Declaration neant',
+  '05': 'Declaration normale (test)',
 };
 
 /** Decode une valeur via une nomenclature, en gardant le code en suffixe. */

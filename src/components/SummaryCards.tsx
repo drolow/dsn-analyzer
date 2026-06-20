@@ -1,7 +1,7 @@
 import type { Analysis } from '../dsn/analyze';
 import { kpis } from '../dsn/stats';
 import { euros, frDate, num } from '../format';
-import { TYPE_DECLARATION, decode } from '../dsn/labels';
+import { NATURE_DECLARATION, decode } from '../dsn/labels';
 
 function Kpi({ label, value, accent }: { label: string; value: string; accent: string }) {
   return (
@@ -18,7 +18,7 @@ export default function SummaryCards({ analysis }: { analysis: Analysis }) {
     .map((p) => frDate(p))
     .sort();
   const types = [...new Set(analysis.declarations.map((d) => d.type).filter(Boolean))]
-    .map((t) => decode(TYPE_DECLARATION, t))
+    .map((t) => decode(NATURE_DECLARATION, t))
     .join(', ');
 
   return (

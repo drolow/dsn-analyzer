@@ -108,7 +108,12 @@ function attach(node: DsnNode, stack: DsnNode[], roots: DsnNode[]): void {
     return;
   }
 
-  // Bloc inconnu : rattache au noeud courant pour ne rien perdre.
+  // Bloc inconnu : rattache au noeud courant pour ne rien perdre. Si le sommet
+  // est une occurrence du meme bloc, on le traite comme un frere (depile)
+  // pour eviter un auto-emboitement.
+  while (stack.length > 0 && stack[stack.length - 1].block === node.block) {
+    stack.pop();
+  }
   if (stack.length > 0) {
     stack[stack.length - 1].children.push(node);
   } else {

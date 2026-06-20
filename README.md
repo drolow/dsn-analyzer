@@ -17,7 +17,7 @@ avec leurs informations importantes.
 - **Synthèse / KPI** : sociétés, établissements, individus, contrats,
   déclarations, rémunération brute et net fiscal cumulés (indicatifs).
 - **Graphiques** : répartition des contrats par nature (CDI/CDD/…), par sexe,
-  pyramide des âges, répartition cadre/non-cadre, effectif par établissement.
+  pyramide des âges, temps plein/temps partiel, effectif par établissement.
 - **Tables détaillées** par entité avec recherche.
 
 ## Démarrage
@@ -86,6 +86,18 @@ compteurs et les tables. Deux points d'amélioration faciles si besoin :
   montants de type `001` (brut non plafonné) du bloc `S21.G00.51`, et le net
   fiscal additionne `S21.G00.50.002`. Ces montants sont **indicatifs** et
   dépendent des conventions de paie ; à valider sur vos données.
+
+### Validé sur un fichier réel
+
+Le parser et les libellés ont été calés sur un vrai fichier DSN mensuel
+(éditeur Silae, norme P23V01) en plus de l'exemple synthétique. Les rubriques
+clés sont confirmées : SIREN/NIC, APE, adresses, NIR, nom/prénoms, date de
+naissance, matricule, nature du contrat (CDI/CDD…), libellé d'emploi, quotités,
+convention collective (IDCC, `S21.G00.40.017`), bases et cotisations.
+
+Quelques nomenclatures restent à finaliser avec le cahier technique officiel
+(notamment le statut catégoriel `S21.G00.40.002/.003`) ; en attendant, les codes
+non décodés s'affichent bruts.
 
 ⚠️ Ne committez jamais de vrais fichiers DSN : `.gitignore` exclut déjà
 `*.dsn` (sauf les exemples fictifs de `src/sample/`).

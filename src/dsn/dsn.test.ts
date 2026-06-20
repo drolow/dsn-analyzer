@@ -8,6 +8,7 @@ import {
   individusParSexe,
   individusParTrancheAge,
   kpis,
+  repartitionTempsTravail,
 } from './stats';
 
 const sample = readFileSync(
@@ -66,6 +67,17 @@ describe('analyze', () => {
 
     const ages = individusParTrancheAge(a);
     expect(ages.reduce((s, x) => s + x.value, 0)).toBe(5);
+  });
+
+  it('repartit temps plein / temps partiel via les quotites', () => {
+    const tt = repartitionTempsTravail(a);
+    expect(tt.find((s) => s.label === 'Temps plein')?.value).toBe(3);
+    expect(tt.find((s) => s.label === 'Temps partiel')?.value).toBe(2);
+  });
+
+  it('remonte la convention collective (IDCC) au niveau entreprise', () => {
+    expect(a.entreprises[0].idcc).toBe('1486');
+    expect(a.entreprises[0].etablissements.size).toBe(2);
   });
 
   it('cumule la remuneration brute (type 001)', () => {
