@@ -56,8 +56,8 @@ export const FIELD_LABEL: Record<string, string> = {
   'S21.G00.30.020': 'Numero technique temporaire (NTT)',
   // Contrat
   'S21.G00.40.001': 'Date de debut du contrat',
-  'S21.G00.40.002': 'Statut conventionnel',
-  'S21.G00.40.003': 'Statut categoriel (retraite compl.)',
+  'S21.G00.40.002': 'Statut du salarie (conventionnel)',
+  'S21.G00.40.003': 'Statut categoriel Retraite Complementaire',
   'S21.G00.40.004': 'Code profession (PCS-ESE)',
   'S21.G00.40.005': 'Complement PCS-ESE',
   'S21.G00.40.006': "Libelle de l'emploi",
@@ -122,12 +122,30 @@ export const NATURE_CONTRAT: Record<string, string> = {
   '93': 'Engagement maritime a duree indeterminee',
 };
 
-/** Statut conventionnel / categoriel cadre (S21.G00.40.002). */
-export const STATUT_CONVENTIONNEL: Record<string, string> = {
-  '01': 'Cadre dirigeant',
-  '02': 'Cadre',
-  '03': 'Non cadre',
-  '04': 'Autre',
+/**
+ * Statut du salarie (conventionnel) - S21.G00.40.002.
+ * Categorie socio-professionnelle au sens de la convention collective.
+ */
+export const STATUT_SALARIE: Record<string, string> = {
+  '03': 'Cadre dirigeant',
+  '04': 'Autre cadre (CCN)',
+  '05': 'Profession intermediaire',
+  '06': 'Employe',
+  '07': 'Ouvrier',
+  '08': "Agent de la fonction publique d'Etat",
+  '09': 'Agent de la fonction publique hospitaliere',
+  '10': 'Agent de la fonction publique territoriale',
+};
+
+/**
+ * Code statut categoriel Retraite Complementaire (AGIRC-ARRCO) -
+ * S21.G00.40.003. C'est ce code qui distingue cadre / non cadre.
+ */
+export const STATUT_CATEGORIEL_RC: Record<string, string> = {
+  '01': 'Cadre (art. 4 et 4 bis)',
+  '02': 'Assimile cadre (extension)',
+  '03': 'Cadre (autre)',
+  '04': 'Non cadre',
 };
 
 /** Nature de la declaration (S20.G00.05.001). */

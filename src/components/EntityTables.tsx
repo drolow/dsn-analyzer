@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import type { Analysis } from '../dsn/analyze';
-import { NATURE_CONTRAT, SEXE, STATUT_CONVENTIONNEL, decode } from '../dsn/labels';
+import { NATURE_CONTRAT, SEXE, STATUT_CATEGORIEL_RC, STATUT_SALARIE, decode } from '../dsn/labels';
 import { dash, frDate, siren as fmtSiren } from '../format';
 
 type Tab = 'entreprises' | 'etablissements' | 'individus' | 'contrats';
@@ -165,7 +165,8 @@ export default function EntityTables({ analysis }: { analysis: Analysis }) {
                 <tr>
                   <Th>Individu</Th>
                   <Th>Nature</Th>
-                  <Th>Statut</Th>
+                  <Th>CSP</Th>
+                  <Th>Cadre/non cadre</Th>
                   <Th>Emploi</Th>
                   <Th>Debut</Th>
                   <Th>Fin</Th>
@@ -182,7 +183,8 @@ export default function EntityTables({ analysis }: { analysis: Analysis }) {
                     <tr key={c.key} className="hover:bg-slate-50">
                       <Td>{individuLabel.get(c.individuKey) ?? '—'}</Td>
                       <Td>{decode(NATURE_CONTRAT, c.nature)}</Td>
-                      <Td>{decode(STATUT_CONVENTIONNEL, c.statut)}</Td>
+                      <Td>{decode(STATUT_SALARIE, c.statut)}</Td>
+                      <Td>{decode(STATUT_CATEGORIEL_RC, c.statutCategoriel)}</Td>
                       <Td>{dash(c.libelleEmploi)}</Td>
                       <Td>{frDate(c.dateDebut)}</Td>
                       <Td>{frDate(c.dateFin)}</Td>

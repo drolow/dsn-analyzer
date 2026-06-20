@@ -95,9 +95,17 @@ clés sont confirmées : SIREN/NIC, APE, adresses, NIR, nom/prénoms, date de
 naissance, matricule, nature du contrat (CDI/CDD…), libellé d'emploi, quotités,
 convention collective (IDCC, `S21.G00.40.017`), bases et cotisations.
 
-Quelques nomenclatures restent à finaliser avec le cahier technique officiel
-(notamment le statut catégoriel `S21.G00.40.002/.003`) ; en attendant, les codes
-non décodés s'affichent bruts.
+Les nomenclatures clés ont été alignées sur le cahier technique NEODeS
+(norme DSN 2026, CT2026.1) :
+
+- nature du contrat `S21.G00.40.007` (CDI/CDD/apprentissage…) ;
+- statut du salarié conventionnel `S21.G00.40.002` (cadre dirigeant, autre cadre,
+  profession intermédiaire, employé, ouvrier, agents de la fonction publique) ;
+- statut catégoriel Retraite Complémentaire `S21.G00.40.003` (cadre / assimilé
+  cadre / non cadre — c'est ce code qui pilote la répartition cadre/non-cadre) ;
+- nature/type de la déclaration `S20.G00.05.001/.002`, sexe `S21.G00.30.005`.
+
+Pour tout code hors nomenclature, l'UI affiche le code brut (aucune perte).
 
 ⚠️ Ne committez jamais de vrais fichiers DSN : `.gitignore` exclut déjà
 `*.dsn` (sauf les exemples fictifs de `src/sample/`).

@@ -1,7 +1,7 @@
 // Statistiques derivees de l'analyse, pretes pour les graphiques.
 
 import type { Analysis } from './analyze';
-import { NATURE_CONTRAT, SEXE, STATUT_CONVENTIONNEL } from './labels';
+import { NATURE_CONTRAT, SEXE, STATUT_CATEGORIEL_RC, STATUT_SALARIE } from './labels';
 
 export interface Slice {
   label: string;
@@ -36,8 +36,14 @@ export function contratsParNature(a: Analysis): Slice[] {
   return toSlices(tally(a.contrats.map((c) => c.nature)), NATURE_CONTRAT);
 }
 
-export function contratsParStatut(a: Analysis): Slice[] {
-  return toSlices(tally(a.contrats.map((c) => c.statut)), STATUT_CONVENTIONNEL);
+/** Repartition par categorie socio-professionnelle (S21.G00.40.002). */
+export function contratsParStatutSalarie(a: Analysis): Slice[] {
+  return toSlices(tally(a.contrats.map((c) => c.statut)), STATUT_SALARIE);
+}
+
+/** Repartition cadre / non cadre (S21.G00.40.003, AGIRC-ARRCO). */
+export function contratsParCategorieCadre(a: Analysis): Slice[] {
+  return toSlices(tally(a.contrats.map((c) => c.statutCategoriel)), STATUT_CATEGORIEL_RC);
 }
 
 const toNum = (s?: string) => parseFloat((s ?? '').replace(',', '.'));

@@ -36,7 +36,8 @@ export interface ContratRec {
   dateDebut?: string;
   dateFin?: string;
   nature?: string; // code
-  statut?: string; // code
+  statut?: string; // S21.G00.40.002 (statut du salarie / CSP)
+  statutCategoriel?: string; // S21.G00.40.003 (cadre / non cadre)
   pcs?: string;
   libelleEmploi?: string;
   quotite?: string; // S21.G00.40.013
@@ -260,6 +261,7 @@ export function analyze(parsed: ParsedFile[]): Analysis {
             dateDebut,
             nature: field(node, '007'),
             statut: field(node, '002'),
+            statutCategoriel: field(node, '003'),
             pcs: field(node, '004'),
             libelleEmploi: field(node, '006'),
             quotite: field(node, '013'),

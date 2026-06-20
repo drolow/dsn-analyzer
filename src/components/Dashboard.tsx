@@ -1,6 +1,8 @@
 import type { Analysis } from '../dsn/analyze';
 import {
+  contratsParCategorieCadre,
   contratsParNature,
+  contratsParStatutSalarie,
   effectifParEtablissement,
   individusParSexe,
   individusParTrancheAge,
@@ -31,9 +33,19 @@ export default function Dashboard({ analysis }: { analysis: Analysis }) {
           data={individusParTrancheAge(analysis)}
         />
         <PieCard
+          title="Repartition cadre / non cadre"
+          subtitle="Statut categoriel Retraite Complementaire (S21.G00.40.003)"
+          data={contratsParCategorieCadre(analysis)}
+        />
+        <PieCard
           title="Temps plein / temps partiel"
           subtitle="Quotite du contrat vs quotite de reference"
           data={repartitionTempsTravail(analysis)}
+        />
+        <BarCard
+          title="Categorie socio-professionnelle"
+          subtitle="Statut du salarie conventionnel (S21.G00.40.002)"
+          data={contratsParStatutSalarie(analysis)}
         />
       </div>
 

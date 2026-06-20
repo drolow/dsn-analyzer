@@ -4,7 +4,9 @@ import { describe, expect, it } from 'vitest';
 import { parseDsn } from './parser';
 import { analyze } from './analyze';
 import {
+  contratsParCategorieCadre,
   contratsParNature,
+  contratsParStatutSalarie,
   individusParSexe,
   individusParTrancheAge,
   kpis,
@@ -73,6 +75,18 @@ describe('analyze', () => {
     const tt = repartitionTempsTravail(a);
     expect(tt.find((s) => s.label === 'Temps plein')?.value).toBe(3);
     expect(tt.find((s) => s.label === 'Temps partiel')?.value).toBe(2);
+  });
+
+  it('repartit cadre / non cadre via le statut categoriel (.003)', () => {
+    const cat = contratsParCategorieCadre(a);
+    expect(cat.find((s) => s.code === '01')?.value).toBe(2); // cadres
+    expect(cat.find((s) => s.code === '04')?.value).toBe(3); // non cadres
+  });
+
+  it('repartit par categorie socio-professionnelle (.002)', () => {
+    const csp = contratsParStatutSalarie(a);
+    expect(csp.reduce((s, x) => s + x.value, 0)).toBe(5);
+    expect(csp.find((s) => s.code === '06')?.value).toBe(1); // employe
   });
 
   it('remonte la convention collective (IDCC) au niveau entreprise', () => {
