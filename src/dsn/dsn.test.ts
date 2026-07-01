@@ -119,6 +119,32 @@ describe('analyze', () => {
   });
 });
 
+describe('robustesse du rattachement (bloc mal place)', () => {
+  // Un bloc dont la parente declaree n'est pas ouverte (ici S21.G00.55, parent
+  // theorique .50, mais present au niveau etablissement) ne doit pas orpheliner
+  // les individus suivants. Regression du "colonne Individus a 0".
+  const dsn =
+    "S21.G00.06.001,'829879402'\n" +
+    "S21.G00.11.001,'00011'\n" +
+    "S21.G00.20.001,'x'\n" +
+    "S21.G00.55.001,'x'\n" +
+    "S21.G00.22.001,'x'\n" +
+    "S21.G00.23.001,'x'\n" +
+    "S21.G00.30.001,'180057898765432'\n" +
+    "S21.G00.40.001,'01012020'\nS21.G00.40.009,'C1'\n" +
+    "S21.G00.30.001,'285127812345678'\n" +
+    "S21.G00.40.001,'01012021'\nS21.G00.40.009,'C2'\n";
+  const a = analyze([parseDsn(dsn, 't.dsn')]);
+
+  it('rattache les individus/contrats malgre le bloc intercale', () => {
+    const e = a.entreprises[0];
+    expect(e.individus.size).toBe(2);
+    expect(e.nbContrats).toBe(2);
+    expect(e.etablissements.size).toBe(1);
+    expect(a.etablissements[0].individus.size).toBe(2);
+  });
+});
+
 describe('couche de surcharge norme', () => {
   it('charge la norme officielle (norme.json) et expose sa version', () => {
     expect(normeChargee()).toBe(true);
