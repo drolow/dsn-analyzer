@@ -75,6 +75,21 @@ describe('analyze', () => {
     expect(ages.reduce((s, x) => s + x.value, 0)).toBe(5);
   });
 
+  it('deduit le sexe du NIR quand la rubrique .005 est absente', () => {
+    // Deux individus sans S21.G00.30.005 : NIR commencant par 2 (femme) et 1 (homme).
+    const dsn =
+      "S21.G00.30.001,'253097512345678'\n" +
+      "S21.G00.30.002,'AAA'\n" +
+      "S21.G00.30.001,'180057898765432'\n" +
+      "S21.G00.30.002,'BBB'\n";
+    const r = analyze([parseDsn(dsn, 't.dsn')]);
+    expect(r.individus.find((i) => i.nir === '253097512345678')?.sexe).toBe('02');
+    expect(r.individus.find((i) => i.nir === '180057898765432')?.sexe).toBe('01');
+    const sexe = individusParSexe(r);
+    expect(sexe.find((s) => s.code === '01')?.value).toBe(1);
+    expect(sexe.find((s) => s.code === '02')?.value).toBe(1);
+  });
+
   it('repartit temps plein / temps partiel via les quotites', () => {
     const tt = repartitionTempsTravail(a);
     expect(tt.find((s) => s.label === 'Temps plein')?.value).toBe(3);

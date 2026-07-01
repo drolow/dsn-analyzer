@@ -25,6 +25,7 @@ export default function Dashboard({ analysis }: { analysis: Analysis }) {
         />
         <PieCard
           title="Repartition par sexe"
+          subtitle="Deduit du NIR si la rubrique sexe est absente"
           data={individusParSexe(analysis)}
         />
         <BarCard
