@@ -120,6 +120,18 @@ function ageFrom(birth: Date, ref: Date): number {
   return age;
 }
 
+/**
+ * Deduit le sexe du 1er chiffre du NIR (S21.G00.30.001) et le renvoie au format
+ * de la nomenclature DSN sexe ('01' masculin, '02' feminin).
+ * 1/3/7 -> homme, 2/4/8 -> femme (3/4 = numeros d'attente, 7/8 = NIA temporaire).
+ */
+function sexeFromNir(nir?: string): string | undefined {
+  const c = nir?.trim().charAt(0);
+  if (c === '1' || c === '3' || c === '7') return '01';
+  if (c === '2' || c === '4' || c === '8') return '02';
+  return undefined;
+}
+
 /** Cle d'individu : NIR, sinon NTT, sinon empreinte nom/prenom/naissance. */
 function individuKey(node: DsnNode): string {
   const nir = field(node, '001');
@@ -234,7 +246,8 @@ export function analyze(parsed: ParsedFile[]): Analysis {
             ntt: field(node, '020'),
             nom: field(node, '002'),
             prenoms: field(node, '004'),
-            sexe: field(node, '005'),
+            // Sexe declare (.005) ; a defaut deduit du NIR (frequent : .005 absent).
+            sexe: field(node, '005') ?? sexeFromNir(field(node, '001')),
             dateNaissance: field(node, '006'),
             age: birth ? ageFrom(birth, ageRef) : undefined,
             codePostal: field(node, '009'),

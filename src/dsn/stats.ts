@@ -10,10 +10,13 @@ export interface Slice {
   code?: string;
 }
 
+/** Cle utilisee pour les valeurs absentes/vides dans les repartitions. */
+const NON_RENSEIGNE = 'Non renseigné';
+
 function tally(values: (string | undefined)[]): Map<string, number> {
   const m = new Map<string, number>();
   for (const v of values) {
-    const key = v && v.trim() ? v.trim() : '—';
+    const key = v && v.trim() ? v.trim() : NON_RENSEIGNE;
     m.set(key, (m.get(key) ?? 0) + 1);
   }
   return m;
