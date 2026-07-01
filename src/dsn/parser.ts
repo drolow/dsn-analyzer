@@ -93,24 +93,24 @@ function attach(node: DsnNode, stack: DsnNode[], roots: DsnNode[]): void {
   }
 
   if (parentBlock !== undefined) {
-    // Bloc connu : on depile jusqu'a exposer son parent au sommet.
-    while (stack.length > 0 && stack[stack.length - 1].block !== parentBlock) {
-      stack.pop();
-    }
-    if (stack.length > 0) {
+    // Bloc connu : on ne depile QUE si son parent declare est effectivement
+    // present sur la pile. Sinon (bloc mal place, ou parente declaree ne
+    // correspondant pas a ce fichier) on evite de vider la pile — cela
+    // orphelinerait tous les blocs suivants (ex. les individus). On retombe
+    // alors sur le rattachement non destructif ci-dessous.
+    if (stack.some((n) => n.block === parentBlock)) {
+      while (stack.length > 0 && stack[stack.length - 1].block !== parentBlock) {
+        stack.pop();
+      }
       stack[stack.length - 1].children.push(node);
       stack.push(node);
       return;
     }
-    // Parent introuvable : on traite le noeud comme une racine (defensif).
-    roots.push(node);
-    stack.push(node);
-    return;
   }
 
-  // Bloc inconnu : rattache au noeud courant pour ne rien perdre. Si le sommet
-  // est une occurrence du meme bloc, on le traite comme un frere (depile)
-  // pour eviter un auto-emboitement.
+  // Bloc inconnu (ou parent absent de la pile) : rattache au noeud courant pour
+  // ne rien perdre, sans vider la pile. Si le sommet est une occurrence du meme
+  // bloc, on le traite comme un frere (depile) pour eviter un auto-emboitement.
   while (stack.length > 0 && stack[stack.length - 1].block === node.block) {
     stack.pop();
   }
