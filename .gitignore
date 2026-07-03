@@ -9,5 +9,6 @@ dist-ssr
 # Donnees sensibles : ne jamais committer de vrais fichiers DSN.
 # Les exemples de developpement sont dans src/sample/ (donnees fictives).
 *.dsn
+*.edi
 *.txt.dsn
 !src/sample/*.dsn

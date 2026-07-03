@@ -145,5 +145,8 @@ Le pied de page indique si une norme officielle est chargée. Ce `norme.json`
 peut être généré depuis le cahier technique (par ex. via un MCP `dsn-cahier-technique`)
 puis déposé tel quel — aucune modification de code n'est nécessaire.
 
+Les fichiers acceptés portent l'extension `.dsn`, `.edi` ou `.txt` (le format
+est de toute façon détecté par le contenu, pas par l'extension).
+
 ⚠️ Ne committez jamais de vrais fichiers DSN : `.gitignore` exclut déjà
-`*.dsn` (sauf les exemples fictifs de `src/sample/`).
+`*.dsn` et `*.edi` (sauf les exemples fictifs de `src/sample/`).
