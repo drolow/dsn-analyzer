@@ -57,7 +57,7 @@ export default function FileDropzone({ onLoad, onLoadSample, compact }: Props) {
         ref={inputRef}
         type="file"
         multiple
-        accept=".dsn,.txt,text/plain"
+        accept=".dsn,.edi,.txt,text/plain"
         className="hidden"
         onChange={(e) => void readFiles(e.target.files)}
       />
