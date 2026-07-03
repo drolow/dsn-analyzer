@@ -33,6 +33,19 @@ npm test           # tests unitaires (parser + analyse)
 Ouvrez l'application, glissez vos fichiers DSN (ou cliquez sur **« Charger un
 exemple »** pour voir une démo avec des données fictives).
 
+## Déploiement (GitHub Pages)
+
+Le workflow `.github/workflows/deploy.yml` build et publie l'application sur
+GitHub Pages à chaque push sur `main`. Pour l'activer une première fois :
+**Settings → Pages → Build and deployment → Source → « GitHub Actions »**.
+L'URL sera `https://<utilisateur>.github.io/dsn-analyzer/`, ouvrable depuis
+n'importe quel navigateur (mobile compris). Le traitement restant 100 % côté
+client, aucune donnée DSN n'est envoyée au serveur.
+
+> Dépôt privé : GitHub Pages nécessite un plan payant. Sur un compte gratuit,
+> rendez le dépôt public (le code ne contient aucune donnée), ou déployez sur
+> Netlify / Cloudflare Pages (build `npm run build`, dossier publié `dist`).
+
 ## Architecture
 
 ```
