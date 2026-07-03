@@ -1,0 +1,18 @@
+# Deploiement GitLab Pages (equivalent de GitHub Pages).
+# GitLab publie le contenu du dossier "public/". Vite genere "dist/",
+# on le renomme donc en "public/" apres le build.
+# URL type : https://<utilisateur>.gitlab.io/<projet>/
+
+pages:
+  image: node:22
+  stage: deploy
+  script:
+    - npm ci
+    - npm run build
+    - rm -rf public && mv dist public
+  artifacts:
+    paths:
+      - public
+  rules:
+    # Ne publie que depuis la branche par defaut (main ou master).
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
